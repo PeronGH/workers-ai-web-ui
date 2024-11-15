@@ -1,0 +1,59 @@
+<html lang="en">
+    <head>
+        <title>Workers AI Web UI</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://unpkg.com/alpinejs@3.14.3" defer></script>
+        <link
+            rel="stylesheet"
+            href="https://unpkg.com/@picocss/pico@2/css/pico.classless.min.css"
+        />
+        <script src="https://unpkg.com/@unocss/runtime@0.64.1"></script>
+        <script src="workers-ai.js"></script>
+    </head>
+
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><strong>Workers AI Web UI</strong></li>
+                </ul>
+                <ul>
+                    <li><a href="#image-to-text">Image to Text</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section
+                id="image-to-text"
+                x-data='{ prompt: "", imgBase64: "", loading: false }'
+                class="flex flex-col"
+            >
+                <h2>Image To Text</h2>
+                <form
+                    @submit.prevent="loading = true; imgBase64 = await generateImage(prompt); loading = false"
+                >
+                    <textarea
+                        name="prompt"
+                        :disabled="loading"
+                        placeholder="Write a prompt for the image..."
+                        aria-label="Prompt for Image"
+                        @input="prompt = $el.value"
+                    ></textarea>
+                    <button
+                        type="submit"
+                        :disabled="loading"
+                        :aria-busy="loading"
+                    >
+                        Generate
+                    </button>
+                </form>
+                <img
+                    class="mx-auto"
+                    :src='"data:image/jpeg;base64," + imgBase64'
+                    x-show="imgBase64"
+                    x-transition
+                />
+            </section>
+        </main>
+    </body>
+</html>
